@@ -23,7 +23,9 @@ int main() {
 #endif
 #if(VERSION == 2)
     Shader myshader("test.glsl");
+    myshader.compile();
     myshader.load_shader();
+    myshader.glsl_main();
 #endif
 
     return 0;
