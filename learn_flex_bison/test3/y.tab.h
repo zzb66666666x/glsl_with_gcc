@@ -39,35 +39,45 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     IN = 258,
-     OUT = 259,
-     LAYOUT = 260,
-     LOC = 261,
-     LB = 262,
-     RB = 263,
-     EQ = 264,
-     END = 265,
-     CR = 266,
-     VEC3 = 267,
-     VEC2 = 268,
-     VAR = 269,
-     INUM = 270
+     UNIFORM = 258,
+     IN = 259,
+     OUT = 260,
+     LAYOUT = 261,
+     LOC = 262,
+     LB = 263,
+     RB = 264,
+     EQ = 265,
+     END = 266,
+     CR = 267,
+     VEC4 = 268,
+     VEC3 = 269,
+     VEC2 = 270,
+     MAT4 = 271,
+     MAT3 = 272,
+     MAT2 = 273,
+     VAR = 274,
+     INUM = 275
    };
 #endif
 /* Tokens.  */
-#define IN 258
-#define OUT 259
-#define LAYOUT 260
-#define LOC 261
-#define LB 262
-#define RB 263
-#define EQ 264
-#define END 265
-#define CR 266
-#define VEC3 267
-#define VEC2 268
-#define VAR 269
-#define INUM 270
+#define UNIFORM 258
+#define IN 259
+#define OUT 260
+#define LAYOUT 261
+#define LOC 262
+#define LB 263
+#define RB 264
+#define EQ 265
+#define END 266
+#define CR 267
+#define VEC4 268
+#define VEC3 269
+#define VEC2 270
+#define MAT4 271
+#define MAT3 272
+#define MAT2 273
+#define VAR 274
+#define INUM 275
 
 
 
@@ -77,7 +87,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 20 "test.y"
+#line 30 "test.y"
 
 	int inum;
 	char* str;
@@ -85,7 +95,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 89 "y.tab.h"
+#line 99 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

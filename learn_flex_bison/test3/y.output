@@ -5,8 +5,8 @@ Grammar
     1 linelist: linelist line
     2         | line
 
-    3 line: glsl_code
-    4     | glsl_code CR
+    3 line: glsl_code CR
+    4     | glsl_code
 
     5 glsl_code: cpp_expression
     6          | layoutdef iodef cpp_expression
@@ -16,294 +16,422 @@ Grammar
 
     9 iodef: IN
    10      | OUT
+   11      | UNIFORM
 
-   11 cpp_expression: VEC3 var_name END
-   12               | VEC2 var_name END
+   12 cpp_expression: VEC4 var_name END
+   13               | VEC3 var_name END
+   14               | VEC2 var_name END
+   15               | MAT4 var_name END
+   16               | MAT3 var_name END
+   17               | MAT2 var_name END
 
-   13 layout_id: INUM
+   18 layout_id: INUM
 
-   14 var_name: VAR
+   19 var_name: VAR
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-IN (258) 9
-OUT (259) 10
-LAYOUT (260) 8
-LOC (261) 8
-LB (262) 8
-RB (263) 8
-EQ (264) 8
-END (265) 11 12
-CR (266) 4
-VEC3 (267) 11
-VEC2 (268) 12
-VAR (269) 14
-INUM (270) 13
+UNIFORM (258) 11
+IN (259) 9
+OUT (260) 10
+LAYOUT (261) 8
+LOC (262) 8
+LB (263) 8
+RB (264) 8
+EQ (265) 8
+END (266) 12 13 14 15 16 17
+CR (267) 3
+VEC4 (268) 12
+VEC3 (269) 13
+VEC2 (270) 14
+MAT4 (271) 15
+MAT3 (272) 16
+MAT2 (273) 17
+VAR (274) 19
+INUM (275) 18
 
 
 Nonterminals, with rules where they appear
 
-$accept (16)
+$accept (21)
     on left: 0
-linelist (17)
+linelist (22)
     on left: 1 2, on right: 0 1
-line (18)
+line (23)
     on left: 3 4, on right: 1 2
-glsl_code (19)
+glsl_code (24)
     on left: 5 6 7, on right: 3 4
-layoutdef (20)
+layoutdef (25)
     on left: 8, on right: 6
-iodef (21)
-    on left: 9 10, on right: 6 7
-cpp_expression (22)
-    on left: 11 12, on right: 5 6 7
-layout_id (23)
-    on left: 13, on right: 8
-var_name (24)
-    on left: 14, on right: 11 12
+iodef (26)
+    on left: 9 10 11, on right: 6 7
+cpp_expression (27)
+    on left: 12 13 14 15 16 17, on right: 5 6 7
+layout_id (28)
+    on left: 18, on right: 8
+var_name (29)
+    on left: 19, on right: 12 13 14 15 16 17
 
 
 state 0
 
     0 $accept: . linelist $end
 
-    IN      shift, and go to state 1
-    OUT     shift, and go to state 2
-    LAYOUT  shift, and go to state 3
-    VEC3    shift, and go to state 4
-    VEC2    shift, and go to state 5
+    UNIFORM  shift, and go to state 1
+    IN       shift, and go to state 2
+    OUT      shift, and go to state 3
+    LAYOUT   shift, and go to state 4
+    VEC4     shift, and go to state 5
+    VEC3     shift, and go to state 6
+    VEC2     shift, and go to state 7
+    MAT4     shift, and go to state 8
+    MAT3     shift, and go to state 9
+    MAT2     shift, and go to state 10
 
-    linelist        go to state 6
-    line            go to state 7
-    glsl_code       go to state 8
-    layoutdef       go to state 9
-    iodef           go to state 10
-    cpp_expression  go to state 11
+    linelist        go to state 11
+    line            go to state 12
+    glsl_code       go to state 13
+    layoutdef       go to state 14
+    iodef           go to state 15
+    cpp_expression  go to state 16
 
 
 state 1
+
+   11 iodef: UNIFORM .
+
+    $default  reduce using rule 11 (iodef)
+
+
+state 2
 
     9 iodef: IN .
 
     $default  reduce using rule 9 (iodef)
 
 
-state 2
+state 3
 
    10 iodef: OUT .
 
     $default  reduce using rule 10 (iodef)
 
 
-state 3
+state 4
 
     8 layoutdef: LAYOUT . LB LOC EQ layout_id RB
 
-    LB  shift, and go to state 12
-
-
-state 4
-
-   11 cpp_expression: VEC3 . var_name END
-
-    VAR  shift, and go to state 13
-
-    var_name  go to state 14
+    LB  shift, and go to state 17
 
 
 state 5
 
-   12 cpp_expression: VEC2 . var_name END
+   12 cpp_expression: VEC4 . var_name END
 
-    VAR  shift, and go to state 13
+    VAR  shift, and go to state 18
 
-    var_name  go to state 15
+    var_name  go to state 19
 
 
 state 6
 
-    0 $accept: linelist . $end
-    1 linelist: linelist . line
+   13 cpp_expression: VEC3 . var_name END
 
-    $end    shift, and go to state 16
-    IN      shift, and go to state 1
-    OUT     shift, and go to state 2
-    LAYOUT  shift, and go to state 3
-    VEC3    shift, and go to state 4
-    VEC2    shift, and go to state 5
+    VAR  shift, and go to state 18
 
-    line            go to state 17
-    glsl_code       go to state 8
-    layoutdef       go to state 9
-    iodef           go to state 10
-    cpp_expression  go to state 11
+    var_name  go to state 20
 
 
 state 7
+
+   14 cpp_expression: VEC2 . var_name END
+
+    VAR  shift, and go to state 18
+
+    var_name  go to state 21
+
+
+state 8
+
+   15 cpp_expression: MAT4 . var_name END
+
+    VAR  shift, and go to state 18
+
+    var_name  go to state 22
+
+
+state 9
+
+   16 cpp_expression: MAT3 . var_name END
+
+    VAR  shift, and go to state 18
+
+    var_name  go to state 23
+
+
+state 10
+
+   17 cpp_expression: MAT2 . var_name END
+
+    VAR  shift, and go to state 18
+
+    var_name  go to state 24
+
+
+state 11
+
+    0 $accept: linelist . $end
+    1 linelist: linelist . line
+
+    $end     shift, and go to state 25
+    UNIFORM  shift, and go to state 1
+    IN       shift, and go to state 2
+    OUT      shift, and go to state 3
+    LAYOUT   shift, and go to state 4
+    VEC4     shift, and go to state 5
+    VEC3     shift, and go to state 6
+    VEC2     shift, and go to state 7
+    MAT4     shift, and go to state 8
+    MAT3     shift, and go to state 9
+    MAT2     shift, and go to state 10
+
+    line            go to state 26
+    glsl_code       go to state 13
+    layoutdef       go to state 14
+    iodef           go to state 15
+    cpp_expression  go to state 16
+
+
+state 12
 
     2 linelist: line .
 
     $default  reduce using rule 2 (linelist)
 
 
-state 8
+state 13
 
-    3 line: glsl_code .
-    4     | glsl_code . CR
+    3 line: glsl_code . CR
+    4     | glsl_code .
 
-    CR  shift, and go to state 18
+    CR  shift, and go to state 27
 
-    $default  reduce using rule 3 (line)
+    $default  reduce using rule 4 (line)
 
 
-state 9
+state 14
 
     6 glsl_code: layoutdef . iodef cpp_expression
 
-    IN   shift, and go to state 1
-    OUT  shift, and go to state 2
+    UNIFORM  shift, and go to state 1
+    IN       shift, and go to state 2
+    OUT      shift, and go to state 3
 
-    iodef  go to state 19
+    iodef  go to state 28
 
 
-state 10
+state 15
 
     7 glsl_code: iodef . cpp_expression
 
-    VEC3  shift, and go to state 4
-    VEC2  shift, and go to state 5
+    VEC4  shift, and go to state 5
+    VEC3  shift, and go to state 6
+    VEC2  shift, and go to state 7
+    MAT4  shift, and go to state 8
+    MAT3  shift, and go to state 9
+    MAT2  shift, and go to state 10
 
-    cpp_expression  go to state 20
+    cpp_expression  go to state 29
 
 
-state 11
+state 16
 
     5 glsl_code: cpp_expression .
 
     $default  reduce using rule 5 (glsl_code)
 
 
-state 12
+state 17
 
     8 layoutdef: LAYOUT LB . LOC EQ layout_id RB
 
-    LOC  shift, and go to state 21
+    LOC  shift, and go to state 30
 
 
-state 13
+state 18
 
-   14 var_name: VAR .
+   19 var_name: VAR .
 
-    $default  reduce using rule 14 (var_name)
-
-
-state 14
-
-   11 cpp_expression: VEC3 var_name . END
-
-    END  shift, and go to state 22
+    $default  reduce using rule 19 (var_name)
 
 
-state 15
+state 19
 
-   12 cpp_expression: VEC2 var_name . END
+   12 cpp_expression: VEC4 var_name . END
 
-    END  shift, and go to state 23
+    END  shift, and go to state 31
 
 
-state 16
+state 20
+
+   13 cpp_expression: VEC3 var_name . END
+
+    END  shift, and go to state 32
+
+
+state 21
+
+   14 cpp_expression: VEC2 var_name . END
+
+    END  shift, and go to state 33
+
+
+state 22
+
+   15 cpp_expression: MAT4 var_name . END
+
+    END  shift, and go to state 34
+
+
+state 23
+
+   16 cpp_expression: MAT3 var_name . END
+
+    END  shift, and go to state 35
+
+
+state 24
+
+   17 cpp_expression: MAT2 var_name . END
+
+    END  shift, and go to state 36
+
+
+state 25
 
     0 $accept: linelist $end .
 
     $default  accept
 
 
-state 17
+state 26
 
     1 linelist: linelist line .
 
     $default  reduce using rule 1 (linelist)
 
 
-state 18
+state 27
 
-    4 line: glsl_code CR .
+    3 line: glsl_code CR .
 
-    $default  reduce using rule 4 (line)
+    $default  reduce using rule 3 (line)
 
 
-state 19
+state 28
 
     6 glsl_code: layoutdef iodef . cpp_expression
 
-    VEC3  shift, and go to state 4
-    VEC2  shift, and go to state 5
+    VEC4  shift, and go to state 5
+    VEC3  shift, and go to state 6
+    VEC2  shift, and go to state 7
+    MAT4  shift, and go to state 8
+    MAT3  shift, and go to state 9
+    MAT2  shift, and go to state 10
 
-    cpp_expression  go to state 24
+    cpp_expression  go to state 37
 
 
-state 20
+state 29
 
     7 glsl_code: iodef cpp_expression .
 
     $default  reduce using rule 7 (glsl_code)
 
 
-state 21
+state 30
 
     8 layoutdef: LAYOUT LB LOC . EQ layout_id RB
 
-    EQ  shift, and go to state 25
+    EQ  shift, and go to state 38
 
 
-state 22
+state 31
 
-   11 cpp_expression: VEC3 var_name END .
-
-    $default  reduce using rule 11 (cpp_expression)
-
-
-state 23
-
-   12 cpp_expression: VEC2 var_name END .
+   12 cpp_expression: VEC4 var_name END .
 
     $default  reduce using rule 12 (cpp_expression)
 
 
-state 24
+state 32
+
+   13 cpp_expression: VEC3 var_name END .
+
+    $default  reduce using rule 13 (cpp_expression)
+
+
+state 33
+
+   14 cpp_expression: VEC2 var_name END .
+
+    $default  reduce using rule 14 (cpp_expression)
+
+
+state 34
+
+   15 cpp_expression: MAT4 var_name END .
+
+    $default  reduce using rule 15 (cpp_expression)
+
+
+state 35
+
+   16 cpp_expression: MAT3 var_name END .
+
+    $default  reduce using rule 16 (cpp_expression)
+
+
+state 36
+
+   17 cpp_expression: MAT2 var_name END .
+
+    $default  reduce using rule 17 (cpp_expression)
+
+
+state 37
 
     6 glsl_code: layoutdef iodef cpp_expression .
 
     $default  reduce using rule 6 (glsl_code)
 
 
-state 25
+state 38
 
     8 layoutdef: LAYOUT LB LOC EQ . layout_id RB
 
-    INUM  shift, and go to state 26
+    INUM  shift, and go to state 39
 
-    layout_id  go to state 27
-
-
-state 26
-
-   13 layout_id: INUM .
-
-    $default  reduce using rule 13 (layout_id)
+    layout_id  go to state 40
 
 
-state 27
+state 39
+
+   18 layout_id: INUM .
+
+    $default  reduce using rule 18 (layout_id)
+
+
+state 40
 
     8 layoutdef: LAYOUT LB LOC EQ layout_id . RB
 
-    RB  shift, and go to state 28
+    RB  shift, and go to state 41
 
 
-state 28
+state 41
 
     8 layoutdef: LAYOUT LB LOC EQ layout_id RB .
 

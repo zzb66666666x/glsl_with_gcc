@@ -1,12 +1,15 @@
-test: main.cpp lex.yy.o y.tab.o parse.h
-	g++ -c main.cpp -o main.o
-	g++ main.o lex.yy.o y.tab.o -o test
+test: main.cpp lex.yy.o y.tab.o parse.o
+	g++ -g -c main.cpp -o main.o
+	g++ -g main.o lex.yy.o y.tab.o parse.o -o test
 
 lex.yy.o: lex.yy.c
-	gcc -o lex.yy.o -c lex.yy.c
+	gcc -g -o lex.yy.o -c lex.yy.c
 
 y.tab.o: y.tab.c y.tab.h
-	gcc -o y.tab.o -c y.tab.c
+	gcc -g -o y.tab.o -c y.tab.c
+
+parse.o: parse.c parse.h
+	gcc -g -o parse.o -c parse.c
 
 parser: test.y test.l
 	bison --yacc -dv test.y
