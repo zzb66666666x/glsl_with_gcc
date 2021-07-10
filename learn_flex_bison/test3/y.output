@@ -1,0 +1,279 @@
+Grammar
+
+    0 $accept: linelist $end
+
+    1 linelist: linelist line
+    2         | line
+
+    3 line: CExpression CR
+    4     | layoutdef iodef CExpression CR
+    5     | iodef CExpression CR
+
+    6 layoutdef: LAYOUT LB LOC EQ INT RB
+
+    7 iodef: IN
+    8      | OUT
+
+    9 CExpression: VEC3 VAR END
+   10            | VEC2 VAR END
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+IN (258) 7
+OUT (259) 8
+LAYOUT (260) 6
+LOC (261) 6
+VAR (262) 9 10
+INT (263) 6
+LB (264) 6
+RB (265) 6
+EQ (266) 6
+END (267) 9 10
+CR (268) 3 4 5
+VEC3 (269) 9
+VEC2 (270) 10
+
+
+Nonterminals, with rules where they appear
+
+$accept (16)
+    on left: 0
+linelist (17)
+    on left: 1 2, on right: 0 1
+line (18)
+    on left: 3 4 5, on right: 1 2
+layoutdef (19)
+    on left: 6, on right: 4
+iodef (20)
+    on left: 7 8, on right: 4 5
+CExpression (21)
+    on left: 9 10, on right: 3 4 5
+
+
+state 0
+
+    0 $accept: . linelist $end
+
+    IN      shift, and go to state 1
+    OUT     shift, and go to state 2
+    LAYOUT  shift, and go to state 3
+    VEC3    shift, and go to state 4
+    VEC2    shift, and go to state 5
+
+    linelist     go to state 6
+    line         go to state 7
+    layoutdef    go to state 8
+    iodef        go to state 9
+    CExpression  go to state 10
+
+
+state 1
+
+    7 iodef: IN .
+
+    $default  reduce using rule 7 (iodef)
+
+
+state 2
+
+    8 iodef: OUT .
+
+    $default  reduce using rule 8 (iodef)
+
+
+state 3
+
+    6 layoutdef: LAYOUT . LB LOC EQ INT RB
+
+    LB  shift, and go to state 11
+
+
+state 4
+
+    9 CExpression: VEC3 . VAR END
+
+    VAR  shift, and go to state 12
+
+
+state 5
+
+   10 CExpression: VEC2 . VAR END
+
+    VAR  shift, and go to state 13
+
+
+state 6
+
+    0 $accept: linelist . $end
+    1 linelist: linelist . line
+
+    $end    shift, and go to state 14
+    IN      shift, and go to state 1
+    OUT     shift, and go to state 2
+    LAYOUT  shift, and go to state 3
+    VEC3    shift, and go to state 4
+    VEC2    shift, and go to state 5
+
+    line         go to state 15
+    layoutdef    go to state 8
+    iodef        go to state 9
+    CExpression  go to state 10
+
+
+state 7
+
+    2 linelist: line .
+
+    $default  reduce using rule 2 (linelist)
+
+
+state 8
+
+    4 line: layoutdef . iodef CExpression CR
+
+    IN   shift, and go to state 1
+    OUT  shift, and go to state 2
+
+    iodef  go to state 16
+
+
+state 9
+
+    5 line: iodef . CExpression CR
+
+    VEC3  shift, and go to state 4
+    VEC2  shift, and go to state 5
+
+    CExpression  go to state 17
+
+
+state 10
+
+    3 line: CExpression . CR
+
+    CR  shift, and go to state 18
+
+
+state 11
+
+    6 layoutdef: LAYOUT LB . LOC EQ INT RB
+
+    LOC  shift, and go to state 19
+
+
+state 12
+
+    9 CExpression: VEC3 VAR . END
+
+    END  shift, and go to state 20
+
+
+state 13
+
+   10 CExpression: VEC2 VAR . END
+
+    END  shift, and go to state 21
+
+
+state 14
+
+    0 $accept: linelist $end .
+
+    $default  accept
+
+
+state 15
+
+    1 linelist: linelist line .
+
+    $default  reduce using rule 1 (linelist)
+
+
+state 16
+
+    4 line: layoutdef iodef . CExpression CR
+
+    VEC3  shift, and go to state 4
+    VEC2  shift, and go to state 5
+
+    CExpression  go to state 22
+
+
+state 17
+
+    5 line: iodef CExpression . CR
+
+    CR  shift, and go to state 23
+
+
+state 18
+
+    3 line: CExpression CR .
+
+    $default  reduce using rule 3 (line)
+
+
+state 19
+
+    6 layoutdef: LAYOUT LB LOC . EQ INT RB
+
+    EQ  shift, and go to state 24
+
+
+state 20
+
+    9 CExpression: VEC3 VAR END .
+
+    $default  reduce using rule 9 (CExpression)
+
+
+state 21
+
+   10 CExpression: VEC2 VAR END .
+
+    $default  reduce using rule 10 (CExpression)
+
+
+state 22
+
+    4 line: layoutdef iodef CExpression . CR
+
+    CR  shift, and go to state 25
+
+
+state 23
+
+    5 line: iodef CExpression CR .
+
+    $default  reduce using rule 5 (line)
+
+
+state 24
+
+    6 layoutdef: LAYOUT LB LOC EQ . INT RB
+
+    INT  shift, and go to state 26
+
+
+state 25
+
+    4 line: layoutdef iodef CExpression CR .
+
+    $default  reduce using rule 4 (line)
+
+
+state 26
+
+    6 layoutdef: LAYOUT LB LOC EQ INT . RB
+
+    RB  shift, and go to state 27
+
+
+state 27
+
+    6 layoutdef: LAYOUT LB LOC EQ INT RB .
+
+    $default  reduce using rule 6 (layoutdef)

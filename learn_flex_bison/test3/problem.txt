@@ -1,0 +1,2 @@
+prase the layout informatin
+provide API, instead of using a main function
