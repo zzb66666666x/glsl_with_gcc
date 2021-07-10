@@ -286,10 +286,10 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 #define YY_END_OF_BUFFER 16
 static yyconst short int yy_accept[43] =
     {   0,
-        0,    0,   16,   15,   12,    9,   13,    5,    6,   14,
-       14,    8,    7,   13,   13,   13,   13,   12,   13,   13,
+        0,    0,   16,   15,   12,   11,   13,    7,    8,   14,
+       14,   10,    9,   13,   13,   13,   13,   12,   13,   13,
        14,   14,    1,   13,   13,   13,   13,   13,   13,    2,
-       13,   13,   13,   11,   10,   13,   13,    3,   13,   13,
+       13,   13,   13,    6,    5,   13,   13,    3,   13,   13,
         4,    0
     } ;
 
@@ -397,8 +397,10 @@ char *yytext;
 #define INITIAL 0
 #line 2 "test.l"
 	#include "y.tab.h"
+	#include <string.h>
+	#include <stdio.h>
 	void yyerror(char *);
-#line 402 "lex.yy.c"
+#line 404 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -549,10 +551,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 10 "test.l"
+#line 12 "test.l"
 
 
-#line 556 "lex.yy.c"
+#line 558 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -637,80 +639,80 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 12 "test.l"
+#line 14 "test.l"
 return IN;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 13 "test.l"
+#line 15 "test.l"
 return OUT;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 14 "test.l"
+#line 16 "test.l"
 return LAYOUT;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 15 "test.l"
+#line 17 "test.l"
 return LOC;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 16 "test.l"
-return LB;
+#line 18 "test.l"
+return VEC3;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 17 "test.l"
-return RB;
+#line 19 "test.l"
+return VEC2;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 18 "test.l"
-return EQ;
+#line 20 "test.l"
+return LB;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 19 "test.l"
-return END;
+#line 21 "test.l"
+return RB;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 20 "test.l"
-return CR;
+#line 22 "test.l"
+return EQ;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 21 "test.l"
-return VEC3;
+#line 23 "test.l"
+return END;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 22 "test.l"
-return VEC2;
+#line 24 "test.l"
+return CR;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 23 "test.l"
+#line 25 "test.l"
 
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 24 "test.l"
-return VAR;
+#line 27 "test.l"
+{yylval.str = strdup(yytext); return VAR;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 25 "test.l"
-return INT;
+#line 28 "test.l"
+{sscanf(yytext,"%d",&yylval.inum); return INUM;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 27 "test.l"
+#line 30 "test.l"
 ECHO;
 	YY_BREAK
-#line 714 "lex.yy.c"
+#line 716 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1596,5 +1598,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 27 "test.l"
+#line 30 "test.l"
 

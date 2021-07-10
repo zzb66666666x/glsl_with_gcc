@@ -1,5 +1,7 @@
 %{
 	#include "y.tab.h"
+	#include <string.h>
+	#include <stdio.h>
 	void yyerror(char *);
 %}
 
@@ -13,15 +15,16 @@ INUM	[1-9]+[0-9]*|0
 "out"		return OUT;
 "layout"	return LAYOUT;
 "location"	return LOC;
+"vec3"		return VEC3;
+"vec2"		return VEC2;
 "("			return LB;
 ")"			return RB;
 "="			return EQ;
 ";"			return END;
 "\n"		return CR;
-"vec3"		return VEC3;
-"vec2"		return VEC2;
 [ \t]+
-{VAR}		return VAR;
-{INUM}		return INT;
+
+{VAR}		{yylval.str = strdup(yytext); return VAR;}
+{INUM}		{sscanf(yytext,"%d",&yylval.inum); return INUM;}
 
 %%

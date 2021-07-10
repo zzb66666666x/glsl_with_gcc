@@ -43,15 +43,15 @@
      OUT = 259,
      LAYOUT = 260,
      LOC = 261,
-     VAR = 262,
-     INT = 263,
-     LB = 264,
-     RB = 265,
-     EQ = 266,
-     END = 267,
-     CR = 268,
-     VEC3 = 269,
-     VEC2 = 270
+     LB = 262,
+     RB = 263,
+     EQ = 264,
+     END = 265,
+     CR = 266,
+     VEC3 = 267,
+     VEC2 = 268,
+     VAR = 269,
+     INUM = 270
    };
 #endif
 /* Tokens.  */
@@ -59,21 +59,34 @@
 #define OUT 259
 #define LAYOUT 260
 #define LOC 261
-#define VAR 262
-#define INT 263
-#define LB 264
-#define RB 265
-#define EQ 266
-#define END 267
-#define CR 268
-#define VEC3 269
-#define VEC2 270
+#define LB 262
+#define RB 263
+#define EQ 264
+#define END 265
+#define CR 266
+#define VEC3 267
+#define VEC2 268
+#define VAR 269
+#define INUM 270
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 20 "test.y"
+
+	int inum;
+	char* str;
+
+
+
+/* Line 1676 of yacc.c  */
+#line 89 "y.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
