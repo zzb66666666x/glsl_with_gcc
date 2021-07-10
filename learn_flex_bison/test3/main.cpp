@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include "parse.h"
 
 using namespace std;
@@ -10,6 +11,9 @@ const char* prog = \
 ;
 
 int main(){
+    printf("testing parsing a file\n");
     parse_file("code.glsl");
+    printf("testing parsing a string");
+    parse_string(prog);
     return 0;
 }

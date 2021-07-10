@@ -1381,7 +1381,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 33 "test.y"
-    {line_cnt++; printf("$> processed line #%d \n\n", line_cnt);}
+    {line_cnt++; printf("$> processed line #%d \n\n", line_cnt); line_cnt = 0;}
     break;
 
   case 8:

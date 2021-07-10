@@ -30,7 +30,7 @@ int line_cnt = 0;
 %%
 
 	linelist: linelist line {line_cnt++; printf("$> processed line #%d \n\n", line_cnt);}
-			| line {line_cnt++; printf("$> processed line #%d \n\n", line_cnt);}
+			| line {line_cnt++; printf("$> processed line #%d \n\n", line_cnt); line_cnt = 0;}
 			;
 
 	line: glsl_code 
