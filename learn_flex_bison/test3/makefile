@@ -20,3 +20,4 @@ clean:
 	rm *.tab.h
 	rm *.yy.c
 	rm *.o
+	rm *.output

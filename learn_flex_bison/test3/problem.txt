@@ -1,2 +1,3 @@
-prase the layout informatin
+prase the layout informatin, in/out/uniform
 provide API, instead of using a main function
+generate useful cpp code

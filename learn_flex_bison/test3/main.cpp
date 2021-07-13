@@ -14,6 +14,13 @@ const char* prog = \
 "uniform mat4 projection;\n"
 "uniform mat4 view;\n"
 "uniform mat4 model;\n"
+"int main(void)\n"
+"{\n"
+"    FragPos = vec3(model*vec4(aPos, 1.0));\n"
+"    gl_Position = projection * view * vec4(FragPos,1.0);\n"
+"    Normal = mat3(transpose(inverse(model))) * aNormal;\n"
+"    TexCoord = vec2(aTexCoord.x, aTexCoord.y);\n"
+"}\n"
 ;
 
 int main(){
@@ -22,17 +29,11 @@ int main(){
     parse_file("code.glsl", &output_code_buffer, &output_code_buffer_size);
     cout<<output_code_buffer<<endl;
     free(output_code_buffer);
+    output_code_buffer = NULL;
     cout<<"##### next testing parsing string in memory #####"<<endl<<endl;
     parse_string(prog, &output_code_buffer, &output_code_buffer_size);
     cout<<output_code_buffer<<endl;
     free(output_code_buffer);
+    output_code_buffer = NULL;
     return 0;
 }
-
-// void main()
-// {
-// 	FragPos = vec3(model*vec4(aPos, 1.0));
-// 	gl_Position = projection * view * vec4(FragPos,1.0);
-// 	Normal = mat3(transpose(inverse(model))) * aNormal;
-// 	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
-// }

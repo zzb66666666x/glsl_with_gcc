@@ -4,55 +4,69 @@
 #include <stdlib.h>
 #include "parse.h"
 
-int line_cnt = 0;
-output_t parser_out;
+buffer_t parser_out;
 
-void init_parser_out(){
-	parser_out.buf = NULL;
-	parser_out.size = 0;
-	parser_out.usage = 0;
-}
-
-int make_buffer(int target_size){
-	char* buf = (char *)malloc(target_size);
-	if (buf == NULL)
+int init_buffer(buffer_t* buf, int target_size){
+	if (buf == NULL) 
 		return FAILURE;
-	if (parser_out.buf != NULL)
-		free(parser_out.buf);
-	parser_out.buf = buf;
-	parser_out.size = target_size;
-	parser_out.usage = 0;
+	char* space = (char *)malloc(target_size);
+	if (space == NULL)
+		return FAILURE;
+	buf->data = space;
+	buf->size = target_size;
+	buf->usage = 0;
+	for (int i=0; i<buf->size; i++){
+		buf->data[i] = '\0';
+	}
 	return SUCCESS;
 }
 
-int register_variable_declaration(const char* type_str, const char* var_name, int layout_status, int io_status){
-	if (var_name == NULL)
+void reset_buffer(buffer_t * buf){
+	if (buf == NULL)
+		return;
+	if (buf->data == NULL){
+		buf->size = 0;
+		buf->usage = 0;
+		return;
+	}
+	for (int i=0; i<buf->size; i++){
+		buf->data[i] = '\0';
+	}
+	buf->usage = 0;	
+}
+
+void free_buffer(buffer_t * buf){
+	if (buf == NULL)
+		return;
+	free(buf->data);
+	buf->size = 0;
+	buf->usage = 0;
+}
+
+extern int register_code(buffer_t * buf, const char* code){
+	if (code == NULL || buf == NULL)
 		return FAILURE;
-	assert(strlen(var_name)<MAX_VARIABLE_LEN);
-	char str[CODE_BUFFER_LEN] = {0};
-	memcpy(str, type_str, strlen(type_str));
-	strcat(str, " ");
-	strcat(str, var_name);
-	strcat(str, ";\n");
-	int length = strlen(str);
-	if (parser_out.usage + length > parser_out.size){
-		int new_size = parser_out.size;
-		int minimum_size = parser_out.usage + length;
+	int length = strlen(code);
+	if (buf->usage + length > buf->size){
+		int new_size = buf->size;
+		int minimum_size = buf->usage + length + 1;
 		while (new_size < minimum_size){
 			new_size *= 2;
 		}
-		char * buf = (char *) malloc(new_size);
-		if (buf == NULL)
+		char * space = (char *) malloc(new_size);
+		if (space == NULL)
 			return FAILURE;
-		memcpy(buf, parser_out.buf, parser_out.usage);
-		free(parser_out.buf);
-		parser_out.buf = buf;
-		parser_out.size = new_size;
+		for (int i=0; i<new_size; i++){
+			space[i] = '\0';
+		}
+		memcpy(space, buf->data, buf->usage);
+		free(buf->data);
+		buf->data = space;
+		buf->size = new_size;
 	}
-	memcpy(parser_out.buf + parser_out.usage, str, length);
-	parser_out.usage += length;
-	return SUCCESS;
+	memcpy(buf->data + buf->usage, code, length);
+	buf->usage += length;
+	return SUCCESS;	
 }
-
 
 

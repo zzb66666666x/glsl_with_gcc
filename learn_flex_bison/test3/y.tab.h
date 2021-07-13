@@ -39,45 +39,65 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     UNIFORM = 258,
-     IN = 259,
-     OUT = 260,
-     LAYOUT = 261,
-     LOC = 262,
-     LB = 263,
-     RB = 264,
-     EQ = 265,
-     END = 266,
-     CR = 267,
-     VEC4 = 268,
-     VEC3 = 269,
-     VEC2 = 270,
-     MAT4 = 271,
-     MAT3 = 272,
-     MAT2 = 273,
-     VAR = 274,
-     INUM = 275
+     IN = 258,
+     OUT = 259,
+     LAYOUT = 260,
+     LOC = 261,
+     UNIFORM = 262,
+     MAT4 = 263,
+     MAT3 = 264,
+     MAT2 = 265,
+     VEC4 = 266,
+     VEC3 = 267,
+     VEC2 = 268,
+     LEFT_PAREN = 269,
+     RIGHT_PAREN = 270,
+     LEFT_BRACE = 271,
+     RIGHT_BRACE = 272,
+     EQ = 273,
+     SEMICOLON = 274,
+     DOT = 275,
+     COMMA = 276,
+     FLOAT = 277,
+     DOUBLE = 278,
+     INT = 279,
+     VOID = 280,
+     BOOL = 281,
+     IDENTIFIER = 282,
+     INTCONSTANT = 283,
+     FLOATCONSTANT = 284,
+     FUNCTION_CODE_BODY = 285
    };
 #endif
 /* Tokens.  */
-#define UNIFORM 258
-#define IN 259
-#define OUT 260
-#define LAYOUT 261
-#define LOC 262
-#define LB 263
-#define RB 264
-#define EQ 265
-#define END 266
-#define CR 267
-#define VEC4 268
-#define VEC3 269
-#define VEC2 270
-#define MAT4 271
-#define MAT3 272
-#define MAT2 273
-#define VAR 274
-#define INUM 275
+#define IN 258
+#define OUT 259
+#define LAYOUT 260
+#define LOC 261
+#define UNIFORM 262
+#define MAT4 263
+#define MAT3 264
+#define MAT2 265
+#define VEC4 266
+#define VEC3 267
+#define VEC2 268
+#define LEFT_PAREN 269
+#define RIGHT_PAREN 270
+#define LEFT_BRACE 271
+#define RIGHT_BRACE 272
+#define EQ 273
+#define SEMICOLON 274
+#define DOT 275
+#define COMMA 276
+#define FLOAT 277
+#define DOUBLE 278
+#define INT 279
+#define VOID 280
+#define BOOL 281
+#define IDENTIFIER 282
+#define INTCONSTANT 283
+#define FLOATCONSTANT 284
+#define FUNCTION_CODE_BODY 285
 
 
 
@@ -87,15 +107,19 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 30 "test.y"
+#line 55 "test.y"
 
-	int inum;
 	char* str;
+	buffer_t* buf;
+	int intval;
+	float floatval;
+	/* double doubleval; */
+	/* unsigned int uintval; */
 
 
 
 /* Line 1676 of yacc.c  */
-#line 99 "y.tab.h"
+#line 123 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
