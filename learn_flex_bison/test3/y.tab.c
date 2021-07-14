@@ -84,20 +84,22 @@ extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE yy_buffer);
 
 #include "parse.h"
-
-#define LAYOUT_UNDEF	-1;
-#define NORMAL_VAR		0
-#define INPUT_VAR		1
-#define OUTPUT_VAR		2
-#define UNIFORM_VAR		3
+#include "symbols.h"
 
 static int layout_status = LAYOUT_UNDEF;
 static int io_status = NORMAL_VAR;
+static int dtype = TYPE_VOID;
+
+void reset_status_flags(){
+	layout_status = LAYOUT_UNDEF;
+	io_status = NORMAL_VAR;
+	dtype = TYPE_VOID;
+}
 
 
 
 /* Line 189 of yacc.c  */
-#line 101 "y.tab.c"
+#line 103 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -192,7 +194,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 55 "test.y"
+#line 57 "test.y"
 
 	char* str;
 	buffer_t* buf;
@@ -204,7 +206,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 208 "y.tab.c"
+#line 210 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -216,7 +218,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 220 "y.tab.c"
+#line 222 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -512,13 +514,13 @@ static const yytype_int8 yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    87,    87,    92,    95,   100,   106,   113,   118,   130,
-     138,   144,   156,   172,   176,   187,   196,   208,   210,   211,
-     214,   215,   216,   217,   218,   219,   220,   221,   222,   223,
-     224,   227,   228,   231,   232,   235,   236,   237,   240,   243,
-     245,   247
+       0,    89,    89,    94,    97,   102,   109,   117,   122,   137,
+     145,   151,   163,   179,   183,   194,   203,   215,   217,   218,
+     221,   222,   223,   224,   225,   226,   227,   228,   229,   230,
+     231,   234,   235,   238,   239,   242,   246,   250,   256,   262,
+     264,   266
 };
 #endif
 
@@ -1460,17 +1462,17 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 87 "test.y"
+#line 89 "test.y"
     {
 	/* init some variables here */
-	printf("////////// translation unit finished //////////\n\n");
+	printf("////////// translation unit finished //////////\n");
 }
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 92 "test.y"
+#line 94 "test.y"
     {
 					printf("\n");
 				}
@@ -1479,7 +1481,7 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 95 "test.y"
+#line 97 "test.y"
     {
 					printf("\n");
 				}
@@ -1488,30 +1490,32 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 100 "test.y"
+#line 102 "test.y"
     {
 			/* translate glsl code and append to output code buffer */ 
 			register_code(&parser_out, (yyvsp[(1) - (1)].buf)->data);
 			free_buffer((yyvsp[(1) - (1)].buf));
 			free((yyvsp[(1) - (1)].buf));
+			reset_status_flags();
 		 }
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 106 "test.y"
+#line 109 "test.y"
     {
 			register_code(&parser_out, (yyvsp[(1) - (1)].buf)->data);
 			free_buffer((yyvsp[(1) - (1)].buf));
 			free((yyvsp[(1) - (1)].buf));
+			reset_status_flags();
 		 }
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 113 "test.y"
+#line 117 "test.y"
     {
 					buffer_t * tmp_buf = (yyvsp[(1) - (2)].buf);
 					register_code(tmp_buf, ";\n");
@@ -1522,13 +1526,16 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 118 "test.y"
+#line 122 "test.y"
     {
+					/* variable decl in shader */
 				   	buffer_t * tmp_buf = (buffer_t*)malloc(sizeof(buffer_t));
 				   	init_buffer(tmp_buf, 300);
 				   	register_code(tmp_buf, (yyvsp[(1) - (3)].str));
 				   	register_code(tmp_buf, (yyvsp[(2) - (3)].str));
 					register_code(tmp_buf, " ;\n");
+					/* register io flags */
+					emplace_profile((yyvsp[(2) - (3)].str), io_status, dtype, layout_status);
 				   	/* free the allocated space by strdup */
 					free((yyvsp[(2) - (3)].str));
 					(yyval.buf) = tmp_buf;
@@ -1538,7 +1545,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 130 "test.y"
+#line 137 "test.y"
     {
 				buffer_t * tmp_buf = (yyvsp[(1) - (2)].buf);
 				register_code(tmp_buf, (yyvsp[(2) - (2)].str));
@@ -1550,7 +1557,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 138 "test.y"
+#line 145 "test.y"
     {
 						buffer_t* tmp_buf = (yyvsp[(1) - (2)].buf);
 						register_code(tmp_buf, ")");
@@ -1562,7 +1569,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 144 "test.y"
+#line 151 "test.y"
     {
 					  	printf("\nend functional with params\n");
 						buffer_t * tmp_buf1 = (yyvsp[(1) - (3)].buf);
@@ -1578,7 +1585,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 156 "test.y"
+#line 163 "test.y"
     {
 					printf("begin functional: \n    ");
 					buffer_t* tmp_buf = (buffer_t*)malloc(sizeof(buffer_t));
@@ -1599,7 +1606,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 172 "test.y"
+#line 179 "test.y"
     {
 				/* pass it directly */
 				(yyval.buf) = (yyvsp[(1) - (1)].buf); 
@@ -1609,7 +1616,7 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 176 "test.y"
+#line 183 "test.y"
     {
 				buffer_t* tmp_buf1 = (yyvsp[(1) - (3)].buf);
 				buffer_t* tmp_buf2 = (yyvsp[(3) - (3)].buf);
@@ -1624,7 +1631,7 @@ yyreduce:
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 187 "test.y"
+#line 194 "test.y"
     {
 							buffer_t* tmp_buf = (buffer_t*)malloc(sizeof(buffer_t));
 							init_buffer(tmp_buf, 300);
@@ -1639,7 +1646,7 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 196 "test.y"
+#line 203 "test.y"
     {
 						 	buffer_t* tmp_buf = (buffer_t*)malloc(sizeof(buffer_t));
 							init_buffer(tmp_buf, 300);
@@ -1651,154 +1658,166 @@ yyreduce:
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 208 "test.y"
+#line 215 "test.y"
     {printf("%s", (yyvsp[(1) - (1)].str)); (yyval.str) = (yyvsp[(1) - (1)].str);}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 210 "test.y"
+#line 217 "test.y"
     {(yyval.str) = (yyvsp[(1) - (1)].str);}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 211 "test.y"
+#line 218 "test.y"
     {(yyval.str) = (yyvsp[(2) - (2)].str);}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 214 "test.y"
-    {printf("void \t"); (yyval.str) = " void ";}
+#line 221 "test.y"
+    {printf("void \t"); (yyval.str) = " void "; dtype = TYPE_VOID;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 215 "test.y"
-    {printf("float \t"); (yyval.str) = " float ";}
+#line 222 "test.y"
+    {printf("float \t"); (yyval.str) = " float "; dtype = TYPE_FLOAT;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 216 "test.y"
-    {printf("double \t"); (yyval.str) = " double ";}
+#line 223 "test.y"
+    {printf("double \t"); (yyval.str) = " double "; dtype = TYPE_DOUBLE;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 217 "test.y"
-    {printf("int \t"); (yyval.str) = " int ";}
+#line 224 "test.y"
+    {printf("int \t"); (yyval.str) = " int "; dtype = TYPE_INT;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 218 "test.y"
-    {printf("bool \t"); (yyval.str) = " bool ";}
+#line 225 "test.y"
+    {printf("bool \t"); (yyval.str) = " bool "; dtype = TYPE_BOOL;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 219 "test.y"
-    {printf("mat4 \t"); (yyval.str) = " mat4 ";}
+#line 226 "test.y"
+    {printf("mat4 \t"); (yyval.str) = " mat4 "; dtype = TYPE_MAT4;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 220 "test.y"
-    {printf("mat3 \t"); (yyval.str) = " mat3 ";}
+#line 227 "test.y"
+    {printf("mat3 \t"); (yyval.str) = " mat3 "; dtype = TYPE_MAT3;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 221 "test.y"
-    {printf("mat2 \t"); (yyval.str) = " mat2 ";}
+#line 228 "test.y"
+    {printf("mat2 \t"); (yyval.str) = " mat2 "; dtype = TYPE_MAT2;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 222 "test.y"
-    {printf("vec4 \t"); (yyval.str) = " vec4 ";}
+#line 229 "test.y"
+    {printf("vec4 \t"); (yyval.str) = " vec4 "; dtype = TYPE_VEC4;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 223 "test.y"
-    {printf("vec3 \t"); (yyval.str) = " vec3 ";}
+#line 230 "test.y"
+    {printf("vec3 \t"); (yyval.str) = " vec3 "; dtype = TYPE_VEC3;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 224 "test.y"
-    {printf("vec2 \t"); (yyval.str) = " vec2 ";}
+#line 231 "test.y"
+    {printf("vec2 \t"); (yyval.str) = " vec2 "; dtype = TYPE_VEC2;}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 235 "test.y"
-    {printf("input var\t");}
+#line 242 "test.y"
+    {
+			io_status = INPUT_VAR;
+			printf("input var\t");
+		}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 236 "test.y"
-    {printf("output var\t");}
+#line 246 "test.y"
+    {
+		   	io_status = OUTPUT_VAR;
+		   	printf("output var\t");
+		}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 237 "test.y"
-    {printf("uniform var\t");}
+#line 250 "test.y"
+    {
+		   	io_status = UNIFORM_VAR;
+		   	printf("uniform var\t");
+		}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 240 "test.y"
-    {printf("layout num %d\t", (yyvsp[(5) - (6)].intval));}
+#line 256 "test.y"
+    {
+				printf("layout num %d\t", (yyvsp[(5) - (6)].intval));
+				layout_status = (yyvsp[(5) - (6)].intval);
+			}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 243 "test.y"
+#line 262 "test.y"
     {(yyval.str) = (yyvsp[(1) - (1)].str); printf("var name %s\t", (yyvsp[(1) - (1)].str));}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 245 "test.y"
+#line 264 "test.y"
     {(yyval.str) = (yyvsp[(1) - (1)].str); printf("func name %s\t", (yyvsp[(1) - (1)].str));}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 247 "test.y"
+#line 266 "test.y"
     {(yyval.intval) = (yyvsp[(1) - (1)].intval);}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1802 "y.tab.c"
+#line 1821 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2010,7 +2029,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 250 "test.y"
+#line 269 "test.y"
 
 
 void yyerror(char *str){
@@ -2029,8 +2048,11 @@ int parse_file(const char* filename, char** output_buffer, int* buf_size)
 		yyrestart(fp);
 	}
 	init_buffer(&parser_out, 1000);
+	reset_status_flags();
 	/* printf("ready to parse\n\n"); */
     yyparse();
+	print_profile();
+	generate_data_path(&parser_out);
 	fclose(fp);
 	*output_buffer = parser_out.data;
 	*buf_size = parser_out.size;
@@ -2042,7 +2064,10 @@ int parse_string(const char* string, char** output_buffer, int* buf_size)
 {
     YY_BUFFER_STATE yy_buffer = yy_scan_string(string);
 	init_buffer(&parser_out, 1000);
+	reset_status_flags();
     yyparse();
+	print_profile();
+	generate_data_path(&parser_out);
     yy_delete_buffer(yy_buffer);
 	*output_buffer = parser_out.data;
 	*buf_size = parser_out.size;

@@ -13,15 +13,17 @@ extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE yy_buffer);
 
 #include "parse.h"
-
-#define LAYOUT_UNDEF	-1;
-#define NORMAL_VAR		0
-#define INPUT_VAR		1
-#define OUTPUT_VAR		2
-#define UNIFORM_VAR		3
+#include "symbols.h"
 
 static int layout_status = LAYOUT_UNDEF;
 static int io_status = NORMAL_VAR;
+static int dtype = TYPE_VOID;
+
+void reset_status_flags(){
+	layout_status = LAYOUT_UNDEF;
+	io_status = NORMAL_VAR;
+	dtype = TYPE_VOID;
+}
 
 %}
 
@@ -86,7 +88,7 @@ static int io_status = NORMAL_VAR;
 
 root: translation_unit{
 	/* init some variables here */
-	printf("////////// translation unit finished //////////\n\n");
+	printf("////////// translation unit finished //////////\n");
 }	
 
 translation_unit: glsl_code {
@@ -102,11 +104,13 @@ glsl_code: decl_expression {
 			register_code(&parser_out, $1->data);
 			free_buffer($1);
 			free($1);
+			reset_status_flags();
 		 }
 		 | def_function {
 			register_code(&parser_out, $1->data);
 			free_buffer($1);
 			free($1);
+			reset_status_flags();
 		 }
 		 ;
 
@@ -116,11 +120,14 @@ decl_expression: function_prototype SEMICOLON{
 					$$ = tmp_buf;
 				}
 			   	| full_type variable_name SEMICOLON {
+					/* variable decl in shader */
 				   	buffer_t * tmp_buf = (buffer_t*)malloc(sizeof(buffer_t));
 				   	init_buffer(tmp_buf, 300);
 				   	register_code(tmp_buf, $1);
 				   	register_code(tmp_buf, $2);
 					register_code(tmp_buf, " ;\n");
+					/* register io flags */
+					emplace_profile($2, io_status, dtype, layout_status);
 				   	/* free the allocated space by strdup */
 					free($2);
 					$$ = tmp_buf;
@@ -211,17 +218,17 @@ full_type: type_specifier {$$ = $1;}
 		 | type_descriptors_list type_specifier {$$ = $2;}
 		 ;
 
-type_specifier: VOID 	{printf("void \t"); $$ = " void ";}
-			  | FLOAT 	{printf("float \t"); $$ = " float ";}
-			  | DOUBLE	{printf("double \t"); $$ = " double ";}
-			  | INT   	{printf("int \t"); $$ = " int ";}
-			  | BOOL 	{printf("bool \t"); $$ = " bool ";}
-			  | MAT4 	{printf("mat4 \t"); $$ = " mat4 ";}
-			  | MAT3 	{printf("mat3 \t"); $$ = " mat3 ";}
-			  | MAT2 	{printf("mat2 \t"); $$ = " mat2 ";}
-			  | VEC4 	{printf("vec4 \t"); $$ = " vec4 ";}
-			  | VEC3 	{printf("vec3 \t"); $$ = " vec3 ";}
-			  | VEC2 	{printf("vec2 \t"); $$ = " vec2 ";}
+type_specifier: VOID 	{printf("void \t"); $$ = " void "; dtype = TYPE_VOID;}
+			  | FLOAT 	{printf("float \t"); $$ = " float "; dtype = TYPE_FLOAT;}
+			  | DOUBLE	{printf("double \t"); $$ = " double "; dtype = TYPE_DOUBLE;}
+			  | INT   	{printf("int \t"); $$ = " int "; dtype = TYPE_INT;}
+			  | BOOL 	{printf("bool \t"); $$ = " bool "; dtype = TYPE_BOOL;}
+			  | MAT4 	{printf("mat4 \t"); $$ = " mat4 "; dtype = TYPE_MAT4;}
+			  | MAT3 	{printf("mat3 \t"); $$ = " mat3 "; dtype = TYPE_MAT3;}
+			  | MAT2 	{printf("mat2 \t"); $$ = " mat2 "; dtype = TYPE_MAT2;}
+			  | VEC4 	{printf("vec4 \t"); $$ = " vec4 "; dtype = TYPE_VEC4;}
+			  | VEC3 	{printf("vec3 \t"); $$ = " vec3 "; dtype = TYPE_VEC3;}
+			  | VEC2 	{printf("vec2 \t"); $$ = " vec2 "; dtype = TYPE_VEC2;}
 			  ;
 
 type_descriptors_list: type_descriptor
@@ -232,12 +239,24 @@ type_descriptor: io_decl
 			   | layout_decl
 			   ;
 
-io_decl: IN {printf("input var\t");}
-	   | OUT {printf("output var\t");}
-	   | UNIFORM {printf("uniform var\t");}
+io_decl: IN {
+			io_status = INPUT_VAR;
+			printf("input var\t");
+		}
+	   | OUT {
+		   	io_status = OUTPUT_VAR;
+		   	printf("output var\t");
+		}
+	   | UNIFORM {
+		   	io_status = UNIFORM_VAR;
+		   	printf("uniform var\t");
+		}
 	   ;
 
-layout_decl: LAYOUT LEFT_PAREN LOC EQ layout_val RIGHT_PAREN {printf("layout num %d\t", $5);}
+layout_decl: LAYOUT LEFT_PAREN LOC EQ layout_val RIGHT_PAREN {
+				printf("layout num %d\t", $5);
+				layout_status = $5;
+			}
 		   ;
 
 variable_name: IDENTIFIER{$$ = $1; printf("var name %s\t", $1);}
@@ -265,8 +284,11 @@ int parse_file(const char* filename, char** output_buffer, int* buf_size)
 		yyrestart(fp);
 	}
 	init_buffer(&parser_out, 1000);
+	reset_status_flags();
 	/* printf("ready to parse\n\n"); */
     yyparse();
+	print_profile();
+	generate_data_path(&parser_out);
 	fclose(fp);
 	*output_buffer = parser_out.data;
 	*buf_size = parser_out.size;
@@ -278,7 +300,10 @@ int parse_string(const char* string, char** output_buffer, int* buf_size)
 {
     YY_BUFFER_STATE yy_buffer = yy_scan_string(string);
 	init_buffer(&parser_out, 1000);
+	reset_status_flags();
     yyparse();
+	print_profile();
+	generate_data_path(&parser_out);
     yy_delete_buffer(yy_buffer);
 	*output_buffer = parser_out.data;
 	*buf_size = parser_out.size;

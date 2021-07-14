@@ -107,7 +107,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 55 "test.y"
+#line 57 "test.y"
 
 	char* str;
 	buffer_t* buf;

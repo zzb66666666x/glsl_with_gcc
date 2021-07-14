@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include "parse.h"
+#include "symbols.h"
 
 buffer_t parser_out;
 
@@ -43,7 +44,7 @@ void free_buffer(buffer_t * buf){
 	buf->usage = 0;
 }
 
-extern int register_code(buffer_t * buf, const char* code){
+int register_code(buffer_t * buf, const char* code){
 	if (code == NULL || buf == NULL)
 		return FAILURE;
 	int length = strlen(code);
@@ -67,6 +68,14 @@ extern int register_code(buffer_t * buf, const char* code){
 	memcpy(buf->data + buf->usage, code, length);
 	buf->usage += length;
 	return SUCCESS;	
+}
+
+void generate_data_path(buffer_t* buf){
+	buffer_t input_port = code_for_input();
+	buffer_t output_port = code_for_output();
+	// merge buffer to parser out
+	register_code(&parser_out, input_port.data);
+	register_code(&parser_out, output_port.data);
 }
 
 

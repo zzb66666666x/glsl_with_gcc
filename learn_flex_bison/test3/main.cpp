@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include "parse.h"
+#include "symbols.h"
 
 using namespace std;
 
@@ -30,10 +31,12 @@ int main(){
     cout<<output_code_buffer<<endl;
     free(output_code_buffer);
     output_code_buffer = NULL;
+    clear_profile();
     cout<<"##### next testing parsing string in memory #####"<<endl<<endl;
     parse_string(prog, &output_code_buffer, &output_code_buffer_size);
     cout<<output_code_buffer<<endl;
     free(output_code_buffer);
     output_code_buffer = NULL;
+    clear_profile();
     return 0;
 }
