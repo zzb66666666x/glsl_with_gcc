@@ -2,10 +2,8 @@
 #define _TRANSLATE_H
 
 #include <string>
+#include <map>
 
-#define TRANSLATE_SUCCESS   1
-#define TRANSLATE_FAIL      0
-
-int translate_to_cpp(std::string& glsl_src, std::string& output);
+void cpp_code_generate(std::string& src, std::string& dest);
 
 #endif

@@ -1465,7 +1465,7 @@ yyreduce:
 #line 89 "test.y"
     {
 	/* init some variables here */
-	printf("////////// translation unit finished //////////\n");
+	printf("////////// TRANSLATION_UNIT_PARSED //////////\n");
 }
     break;
 
@@ -2060,11 +2060,12 @@ int parse_file(const char* filename, char** output_buffer, int* buf_size)
 	yywrap();
 }
 
-int parse_string(const char* string, char** output_buffer, int* buf_size)
+int parse_string(const char* str, char** output_buffer, int* buf_size)
 {
-    YY_BUFFER_STATE yy_buffer = yy_scan_string(string);
+    YY_BUFFER_STATE yy_buffer = yy_scan_string(str);
 	init_buffer(&parser_out, 1000);
 	reset_status_flags();
+	printf("////////// TRANSLATION_UNIT_BEGIN //////////\n");
     yyparse();
 	print_profile();
 	generate_data_path(&parser_out);

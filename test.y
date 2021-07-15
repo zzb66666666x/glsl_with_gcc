@@ -88,7 +88,7 @@ void reset_status_flags(){
 
 root: translation_unit{
 	/* init some variables here */
-	printf("////////// translation unit finished //////////\n");
+	printf("////////// TRANSLATION_UNIT_PARSED //////////\n");
 }	
 
 translation_unit: glsl_code {
@@ -301,6 +301,7 @@ int parse_string(const char* str, char** output_buffer, int* buf_size)
     YY_BUFFER_STATE yy_buffer = yy_scan_string(str);
 	init_buffer(&parser_out, 1000);
 	reset_status_flags();
+	printf("////////// TRANSLATION_UNIT_BEGIN //////////\n");
     yyparse();
 	print_profile();
 	generate_data_path(&parser_out);

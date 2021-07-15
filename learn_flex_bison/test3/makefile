@@ -24,3 +24,4 @@ clean:
 	rm *.yy.c
 	rm *.o
 	rm *.output
+	rm *.exe
