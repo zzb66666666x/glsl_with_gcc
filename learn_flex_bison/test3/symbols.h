@@ -16,6 +16,7 @@ typedef struct{
 extern void emplace_profile(const char* name, int io, int dtype, int layout);
 extern buffer_t code_for_input();
 extern buffer_t code_for_output();
+extern buffer_t code_for_uniform();
 extern void* get_profile();
 extern void clear_profile();
 extern void print_profile();

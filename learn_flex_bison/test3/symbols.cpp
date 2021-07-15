@@ -28,9 +28,9 @@ static string io_string_map[] = {
     "uniform"
 };
 
-static const char* input_port_proto = "\nvoid input_port(map<string, data_t> indata){\n";
+static const char* input_port_proto = "\nvoid input_port(std::map<std::string, data_t>& indata){\n";
 
-static const char* output_port_proto = "\nvoid output_port(map<string, data_t>& outdata){\n";
+static const char* output_port_proto = "\nvoid output_port(std::map<std::string, data_t>& outdata){\n";
 
 static void assign_input_value(string& code, const char* name, int dtype){
     string var_name = name;
@@ -42,6 +42,20 @@ static void fetch_output_value(string& code, const char* name, int dtype){
     string var_name = name;
     string type_name = type_string_map[dtype];
     code = string("    outdata.emplace(\"") + var_name + string("\", (data_t){.") + type_name + string("_var = ") + var_name + string("});\n");
+}
+
+static string uniform_var_input_port(const char* name, int dtype){
+    string var_name = name;
+    string type_name = type_string_map[dtype];    
+    return string("\nvoid set_uniform_") + var_name + string("(data_t data){\n    ") + 
+           var_name + string(" = data.") + type_name + string("_var;\n}\n");
+}
+
+static string uniform_var_output_port(const char* name, int dtype){
+    string var_name = name;
+    string type_name = type_string_map[dtype];  
+    return string("\ndata_t get_uniform_") + var_name + string("(){\n    ") + 
+           string("return (data_t){.") + type_name + "_var = " + var_name + string("};\n}\n");
 }
 
 void emplace_profile(const char* name, int io, int dtype, int layout){
@@ -77,6 +91,20 @@ buffer_t code_for_output(){
     }
     register_code(&output_port, "}\n");
     return output_port;
+}
+
+buffer_t code_for_uniform(){
+    buffer_t uniform_port;
+    init_buffer(&uniform_port, 500);
+    for (auto it = io_profile.begin(); it != io_profile.end(); it++){
+        if (it->second.io == UNIFORM_VAR){
+            string s1 = uniform_var_input_port(it->first.c_str(), it->second.dtype);
+            string s2 = uniform_var_output_port(it->first.c_str(), it->second.dtype);
+            register_code(&uniform_port, s1.c_str());
+            register_code(&uniform_port, s2.c_str());
+        }
+    }
+    return uniform_port;
 }
 
 void* get_profile(){

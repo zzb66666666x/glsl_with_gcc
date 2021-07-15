@@ -73,9 +73,11 @@ int register_code(buffer_t * buf, const char* code){
 void generate_data_path(buffer_t* buf){
 	buffer_t input_port = code_for_input();
 	buffer_t output_port = code_for_output();
+	buffer_t uniform_port = code_for_uniform();
 	// merge buffer to parser out
 	register_code(&parser_out, input_port.data);
 	register_code(&parser_out, output_port.data);
+	register_code(&parser_out, uniform_port.data);
 }
 
 
