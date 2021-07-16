@@ -28,3 +28,4 @@ clean:
 	rm *.o
 	rm *.output
 	rm *.exe
+	rm *.dll

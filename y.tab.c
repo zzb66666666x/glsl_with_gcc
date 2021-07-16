@@ -1464,7 +1464,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 89 "test.y"
     {
-	/* init some variables here */
+	emplace_profile("gl_Position", OUTPUT_VAR, TYPE_VEC4, LAYOUT_UNDEF);
 	printf("////////// TRANSLATION_UNIT_PARSED //////////\n");
 }
     break;

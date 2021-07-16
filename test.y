@@ -87,7 +87,7 @@ void reset_status_flags(){
 %%
 
 root: translation_unit{
-	/* init some variables here */
+	emplace_profile("gl_Position", OUTPUT_VAR, TYPE_VEC4, LAYOUT_UNDEF);
 	printf("////////// TRANSLATION_UNIT_PARSED //////////\n");
 }	
 

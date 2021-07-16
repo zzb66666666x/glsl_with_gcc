@@ -14,13 +14,13 @@
 #include "vec_math.h"
 #include "translate.h"
 
-__declspec(dllimport) int glsl_main();
+__declspec(dllimport) void glsl_main();
 __declspec(dllimport) void input_port(std::map<std::string, data_t>& indata); 
 __declspec(dllimport) void output_port(std::map<std::string, data_t>& outdata); 
 __declspec(dllimport) void input_uniform_dispatch(int idx, data_t data); 
 __declspec(dllimport) data_t output_uniform_dispatch(int idx); 
 
-typedef int (*shader_main)(void);
+typedef void (*shader_main)(void);
 typedef void (*shader_input_port)(std::map<std::string, data_t>& indata);
 typedef void (*shader_output_port)(std::map<std::string, data_t>& outdata);
 typedef void (*shader_input_uniform_dispatch)(int idx, data_t data); 
@@ -98,11 +98,12 @@ class Shader{
         }
     }
 
+    std::map<std::string, io_attrib> io_profile;
+    std::map<std::string, int> uniform_map;
+
     private:
         std::string glsl_code;
         std::string cpp_code;
-        std::map<std::string, io_attrib> io_profile;
-        std::map<std::string, int> uniform_map;
         // windows dll object
         HINSTANCE hDLL;
 };
