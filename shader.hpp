@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <iostream>
 #include <assert.h>
 #include <map>
 // windows API
@@ -14,20 +13,24 @@
 #include "vec_math.h"
 #include "translate.h"
 
+typedef int* (*callback_t)();
+
 __declspec(dllimport) void glsl_main();
 __declspec(dllimport) void input_port(std::map<std::string, data_t>& indata); 
 __declspec(dllimport) void output_port(std::map<std::string, data_t>& outdata); 
 __declspec(dllimport) void input_uniform_dispatch(int idx, data_t data); 
 __declspec(dllimport) data_t output_uniform_dispatch(int idx); 
+__declspec(dllimport) void get_main_program_data(callback_t callback);
 
 typedef void (*shader_main)(void);
 typedef void (*shader_input_port)(std::map<std::string, data_t>& indata);
 typedef void (*shader_output_port)(std::map<std::string, data_t>& outdata);
 typedef void (*shader_input_uniform_dispatch)(int idx, data_t data); 
 typedef data_t (*shader_output_uniform_dispatch)(int idx); 
-
+typedef void (*shader_get_main_program_data)(callback_t callback);
 class Shader{
     public:
+    Shader(){}
     Shader(const char* glsl_path){
         std::ifstream glsl_file;
         glsl_file.open(glsl_path);
@@ -76,6 +79,7 @@ class Shader{
         output_port = (shader_output_port)GetProcAddress(hDLL,"output_port");
         input_uniform_dispatch = (shader_input_uniform_dispatch)GetProcAddress(hDLL,"input_uniform_dispatch");
         output_uniform_dispatch = (shader_output_uniform_dispatch)GetProcAddress(hDLL,"output_uniform_dispatch");
+        get_main_program_data = (shader_get_main_program_data)GetProcAddress(hDLL, "get_main_program_data");
     }
     
     shader_main glsl_main;
@@ -83,6 +87,7 @@ class Shader{
     shader_output_port output_port;
     shader_input_uniform_dispatch input_uniform_dispatch;
     shader_output_uniform_dispatch output_uniform_dispatch;
+    shader_get_main_program_data get_main_program_data;
 
     inline void compile(){
         FILE *proc = popen("g++ -fPIC -shared -o test.dll -x c++ -", "w");

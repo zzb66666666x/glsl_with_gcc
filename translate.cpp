@@ -16,7 +16,15 @@ static string prefix = \
 "__declspec(dllexport) void output_port(std::map<std::string, data_t>& outdata); \n"
 "__declspec(dllexport) void input_uniform_dispatch(int idx, data_t data); \n"
 "__declspec(dllexport) data_t output_uniform_dispatch(int idx); \n"
-"vec4 gl_Position;\n"
+"typedef int* (*callback_t)(); \n"
+"__declspec(dllexport) void get_main_program_data(callback_t callback); \n"
+"vec4 gl_Position; \n"
+"void get_main_program_data(callback_t callback){ \n"
+"    int* data = callback(); \n"
+"    for (int i=0; i<5; i++){ \n"
+"        printf(\"%d  \",data[i]); \n"
+"    } \n"
+"} \n"
 ;
 
 static string postfix = \

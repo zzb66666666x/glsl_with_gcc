@@ -7,6 +7,12 @@
 
 using namespace std;
 
+int data_for_dll[5] = {1,2,3,4,5};
+
+int* get_data(){
+    return data_for_dll;
+}
+
 int main() {
     Shader myshader("code.glsl");
     myshader.compile();
@@ -57,5 +63,7 @@ int main() {
                 break;
         }
     }
+    // testing communication between main program and shader
+    myshader.get_main_program_data(get_data);
     return 0;
 }
